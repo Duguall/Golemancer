@@ -7,7 +7,7 @@
     "dependencies": {
         "geotic": "^4.1.6",
         "html-webpack-plugin": "^5.3.2",
-        "webpack": "^5.42.0",
+        "webpack": "^5.50.0",
         "wglt": "^0.2.5"
     },
     "devDependencies": {
