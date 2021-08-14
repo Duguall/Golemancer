@@ -19,16 +19,17 @@ for (let y = 0; y < terminal.height; y++) {
 const world = engine.createWorld();
 //player = human test pilot
 const player = world.createPrefab("Human")
-player.position.x = 50
-player.position.y = 20
+player.position.x = 40
+player.position.y = 40
 locationId[player.position.x + "," + player.position.y] = player.id
 //zombie = zombie test pilot
-
-for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+const zombiex = 60
+const zombiey = 20
+for (let i = 0; i < zombiex; i++) {
+    for (let j = 0; j < zombiey; j++) {
         let zombie = world.createPrefab("Zombie")
-        zombie.position.x = 48+i
-        zombie.position.y = 10+j
+        zombie.position.x = 80/2-zombiex/2+i
+        zombie.position.y = 1+j
         locationId[zombie.position.x + "," + zombie.position.y] = zombie.id
     }  
 }
