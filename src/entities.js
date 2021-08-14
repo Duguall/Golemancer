@@ -72,7 +72,7 @@ export let Human = {
         type: "Appearance",
             properties: {
                 char: "@",
-                color: Colors.YELLOW
+                color: Colors.LIGHT_MAGENTA
             },
     },
     {
@@ -134,7 +134,7 @@ export let Zombie = {
      {
          type: "Movement",
          properties: {
-             velocity: 1,
+             velocity: 100,
              x: 0,
              y: 0,
              cardinal: 0
@@ -142,3 +142,31 @@ export let Zombie = {
      },
     ] 
 };
+
+export let Structure = {
+    name: "Structure",
+    components: [
+        {
+            type: "Appearance",
+              properties: {
+                    char: "X",
+                    color: Colors.WHITE
+            }
+        },
+        {
+            type: "Description",
+            properties: {
+                name: "Structure",
+                desc: "Nondescript structure."
+            }
+        },
+        {
+            type: "Position",
+            properties: {
+                x: 0,
+                y: 0
+            },
+        },
+    ]
+
+}

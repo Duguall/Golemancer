@@ -34,6 +34,9 @@ export class Enemy extends Component {
     };
 }
 //hp = current health, maxHp = maximum health allowed
+export class hasMoved extends Component {
+    static properties = {}
+}
 export class Health extends Component {
     static properties = {
         hp: 1,

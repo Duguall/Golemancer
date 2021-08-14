@@ -1,11 +1,13 @@
 import * as wglt from "wglt";
 import engine from './ecs';
-import {Appearance, Combat, Description, Health, Position, Action, Movement, Enemy, Ally} from "./components"
+import {Ally, Appearance, Combat, Description, Enemy, hasMoved, Health, Position, Action, Movement} from "./components"
 
 
 var locationId = {}
+const terminalx = 82
+const terminaly = 52
 //creating the map in "canvas" width = 80, height = 50
-const terminal = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
+const terminal = new wglt.Terminal(document.querySelector('canvas'), terminalx, terminaly);
 
 //WGLT leftovers. Setting the whole map as explored and visible to the player
 for (let y = 0; y < terminal.height; y++) {
@@ -17,11 +19,42 @@ for (let y = 0; y < terminal.height; y++) {
 
 //creating world to contain entities in order to enable query
 const world = engine.createWorld();
+
+//terminal border
+//top
+for( let i = 0; i <terminalx; i++) {
+    let structure = world.createPrefab("Structure")
+    structure.position.x = i
+    locationId[structure.position.x + "," + structure.position.y] = structure.id
+
+}
+//left
+for( let i = 0; i <terminaly; i++) {
+    let structure = world.createPrefab("Structure")
+    structure.position.y = i
+    locationId[structure.position.x + "," + structure.position.y] = structure.id
+}
+//bottom
+for( let i = 0; i <terminalx; i++) {
+    let structure = world.createPrefab("Structure")
+    structure.position.x = i
+    structure.position.y = terminaly - 1
+    locationId[structure.position.x + "," + structure.position.y] = structure.id
+}
+//right
+for( let i = 0; i <terminaly; i++) {
+    let structure = world.createPrefab("Structure")
+    structure.position.y = i
+    structure.position.x = terminalx - 1
+    locationId[structure.position.x + "," + structure.position.y] = structure.id
+}
 //player = human test pilot
-const player = world.createPrefab("Human")
-player.position.x = 40
-player.position.y = 40
-locationId[player.position.x + "," + player.position.y] = player.id
+for (let i = 0; i < 3; i++) {
+    let player = world.createPrefab("Human")
+    player.position.x = 20 + i * 20
+    player.position.y = 40
+    
+}
 //zombie = zombie test pilot
 const zombiex = 60
 const zombiey = 20
@@ -86,6 +119,9 @@ const query = {
     allies : world.createQuery({
         all: [Ally],
     }),
+    action : world.createQuery({
+        all: [Action],
+    })
 }; 
 
 //cardinal direction for movement
@@ -130,7 +166,7 @@ function enemyAI(time) {
 //TODO: Movement for velocity > 1. Increment through each step to determine if next step is clear/adjacent to target
 //TODO: Maybe randomize the direction zombies decide to go when blocked.
 function doAction(time) {
-    query.all.get().forEach((entity) => {
+    query.action.get().forEach((entity) => {
         //action available
         if (time - entity.action.last >= entity.action.adjusted) {
             //target available
@@ -169,12 +205,16 @@ function doAction(time) {
                     entity.position.x += entity.movement.x
                     entity.position.y += entity.movement.y
                     locationId[entity.position.x + "," + entity.position.y] = entity.id
+                    entity.add(hasMoved)
                 }
             }
             //adjusted action speed = action speed + (action speed - (time since last attack))
             //Any action above or below the action speed will adjust the next action accordingly to keep action speed on average
-            //i.e. 1200ms since last action == next action is 800ms instead of 1000ms 
-            entity.action.adjusted = entity.action.speed + entity.action.speed - (time - entity.action.last)
+            //i.e. 1200ms since last action == next action is 800ms instead of 1000ms
+            //multiplier is for speeding up actions. i.e. velocity of 2 = move twice as fast. 1000ms/2=500ms cooldown
+            let multiplier = 1
+            if (entity.hasMoved)  {multiplier = entity.movement.velocity}
+            entity.action.adjusted = (entity.action.speed + entity.action.speed - (time - entity.action.last))/multiplier
             entity.action.last = time
         }
     });
