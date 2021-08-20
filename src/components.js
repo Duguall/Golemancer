@@ -40,8 +40,23 @@ export class hasMoved extends Component {
 export class Health extends Component {
     static properties = {
         hp: 1,
-        maxHp: 1
-    }  
+        maxHp: 1,
+        minHp: 0
+    }
+    reduce(amount) {
+        this.hp = Math.max(this.hp-amount, this.minHp)
+    }
+    heal(amount) {
+        this.hp = Math.min(this.hp+amount, this.maxHp)
+    }
+    onDamageTaken(event) {
+    if (event.data.damage > 0) {
+        this.reduce(event.data.damage)
+    } else {
+        this.heal(event.data.damage)
+    }
+    }
+    
 }
 //x,y = x,y coordinate position on display
 export class Position extends Component {
@@ -61,9 +76,10 @@ export class Action extends Component {
 //x = horizontal movement speed, y = vertical movement speed. i.e. per movement action move up to x/y velocity.
 export class Movement extends Component {
     static properties = {
-        velocity: 0,
+        velocity: 1,
         x: 0,
-        y: 0 
+        y: 0,
+        cardinal: 0
     };
 }
 

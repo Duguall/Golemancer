@@ -5,18 +5,10 @@ export let Being = {
     components: [
         {
             type: "Appearance",
-              properties: {
-                    char: "@",
-                    color: Colors.WHITE
-            }
+
         },
         {
             type: "Combat",
-            properties: {
-                target: "",
-                x: 0,
-                y: 0
-            },
         },
         {
             type: "Description",
@@ -27,34 +19,15 @@ export let Being = {
         },
         {
             type: "Health",
-            properties: {
-               hp: 1,
-               maxHp: 1
-            },
         },
         {
             type: "Position",
-            properties: {
-                x: 0,
-                y: 0
-            },
         },
         {
             type: "Action",
-            properties: {
-                speed: 1000,
-                last: 0,
-                adjusted: 1000,
-            }
         },
         {
             type: "Movement",
-            properties: {
-                velocity: 0,
-                x: 0,
-                y: 0,
-                cardinal: 0
-            },
         },
 
     ],
@@ -64,6 +37,11 @@ export let Human = {
    name: "Human",
    inherit: "Being",
    components: [
+    { type: "Action",
+        properties: {
+            speed: 1000
+        }    
+    },
     {
         type: "Ally",
             properties: {},
@@ -93,9 +71,6 @@ export let Human = {
         type: "Movement",
         properties: {
             velocity: 1,
-            x: 0,
-            y: 0,
-            cardinal: 0
         },
     }
    ] 
@@ -135,9 +110,6 @@ export let Zombie = {
          type: "Movement",
          properties: {
              velocity: 50,
-             x: 0,
-             y: 0,
-             cardinal: 0
          },
      },
     ] 
@@ -162,10 +134,6 @@ export let Structure = {
         },
         {
             type: "Position",
-            properties: {
-                x: 0,
-                y: 0
-            },
         },
     ]
 
