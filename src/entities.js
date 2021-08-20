@@ -134,7 +134,7 @@ export let Zombie = {
      {
          type: "Movement",
          properties: {
-             velocity: 100,
+             velocity: 50,
              x: 0,
              y: 0,
              cardinal: 0

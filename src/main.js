@@ -56,12 +56,12 @@ for (let i = 0; i < 3; i++) {
     
 }
 //zombie = zombie test pilot
-const zombiex = 60
-const zombiey = 20
+const zombiex = 40
+const zombiey = 10
 for (let i = 0; i < zombiex; i++) {
     for (let j = 0; j < zombiey; j++) {
         let zombie = world.createPrefab("Zombie")
-        zombie.position.x = 80/2-zombiex/2+i
+        zombie.position.x = 80/2-zombiex/2+i+1
         zombie.position.y = 1+j
         locationId[zombie.position.x + "," + zombie.position.y] = zombie.id
     }  
@@ -129,44 +129,42 @@ const cardinals = [[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
 
 //Collective of all enemy AI
 //AI needs to have targetting, attacking, moving
-function enemyAI(time) {
-
-    query.enemies.get().forEach((entityEnemy) => {
-        //zombie AI
-
-        if (entityEnemy.description.name == "Zombie") {
-            let distance = 0
-            //Determine closest player ally to zombie
-            query.allies.get().forEach((entityAlly) => {
-                if (Math.hypot((entityEnemy.position.x - entityAlly.position.x),(entityEnemy.position.y - entityAlly.position.y)) < distance || distance == 0) {
-                    entityEnemy.combat.x = entityAlly.position.x
-                    entityEnemy.combat.y = entityAlly.position.y
-                    entityEnemy.combat.target = entityAlly.id
-                    distance = Math.hypot((entityEnemy.position.x - entityAlly.position.x),(entityEnemy.position.y - entityAlly.position.y))
-                };
-            });
-            entityEnemy.combat.distance = distance
-            //determine cardinal movement to nearest enemy
-            for (let i = 0; i < 8; i++) {
-                let angle = Math.atan2(entityEnemy.combat.x - entityEnemy.position.x, entityEnemy.combat.y - entityEnemy.position.y)* 180 / Math.PI
-                let lowAngle = i * 45 - 22.5
-                let highAngle = i * 45 + 22.5
-                if (Math.sign(lowAngle) == -1) {lowAngle += 360}
-                if (Math.sign(angle) == -1) {angle += 360}
-                if ((i == 0 && (angle >= 337.5 || angle <= 22.5)) || (lowAngle <= angle && angle <= highAngle)) {
-                    entityEnemy.movement.x = cardinals[i][0]
-                    entityEnemy.movement.y = cardinals[i][1]
-                    entityEnemy.movement.cardinal = i
-                };
+function enemyAI(entityEnemy, time) {
+    if (entityEnemy.description.name == "Zombie") {
+        let distance = 0
+        //Determine closest player ally to zombie
+        query.allies.get().forEach((entityAlly) => {
+            if (Math.hypot((entityEnemy.position.x - entityAlly.position.x),(entityEnemy.position.y - entityAlly.position.y)) < distance || distance == 0) {
+                entityEnemy.combat.x = entityAlly.position.x
+                entityEnemy.combat.y = entityAlly.position.y
+                entityEnemy.combat.target = entityAlly.id
+                distance = Math.hypot((entityEnemy.position.x - entityAlly.position.x),(entityEnemy.position.y - entityAlly.position.y))
+            };
+        });
+        entityEnemy.combat.distance = distance
+        //determine cardinal movement to nearest enemy
+        for (let i = 0; i < 8; i++) {
+            let angle = Math.atan2(entityEnemy.combat.x - entityEnemy.position.x, entityEnemy.combat.y - entityEnemy.position.y)* 180 / Math.PI
+            let lowAngle = i * 45 - 22.5
+            let highAngle = i * 45 + 22.5
+            if (Math.sign(lowAngle) == -1) {lowAngle += 360}
+            if (Math.sign(angle) == -1) {angle += 360}
+            if ((i == 0 && (angle >= 337.5 || angle <= 22.5)) || (lowAngle <= angle && angle <= highAngle)) {
+                entityEnemy.movement.x = cardinals[i][0]
+                entityEnemy.movement.y = cardinals[i][1]
+                entityEnemy.movement.cardinal = i
             };
         };
-    });
+    };
 }
 //query all and do their next action. Attack else move
 //TODO: Movement for velocity > 1. Increment through each step to determine if next step is clear/adjacent to target
 //TODO: Maybe randomize the direction zombies decide to go when blocked.
 function doAction(time) {
     query.action.get().forEach((entity) => {
+        if (entity.has(Enemy)) {
+            enemyAI(entity, time)
+        }
         //action available
         if (time - entity.action.last >= entity.action.adjusted) {
             //target available
@@ -179,26 +177,45 @@ function doAction(time) {
                     if (!locationId[(entity.position.x + entity.movement.x) + "," + (entity.position.y + entity.movement.y)]) {
                         //empty
                     } else {
+                        let randomDirection = ["None"]
                         //front left
                         if (!locationId[(entity.position.x + cardinals.at((entity.movement.cardinal + 1) % 8)[0]) + "," + (entity.position.y + cardinals.at((entity.movement.cardinal + 1) % 8)[1])]) {
-                            entity.movement.x = cardinals.at((entity.movement.cardinal + 1) % 8)[0]
-                            entity.movement.y = cardinals.at((entity.movement.cardinal + 1) % 8)[1]
+                            randomDirection.push("Front Left")
                         //front right
                         } else if (!locationId[(entity.position.x + cardinals.at((entity.movement.cardinal - 1) % 8)[0]) + "," + (entity.position.y + cardinals.at((entity.movement.cardinal - 1) % 8)[1])]) {
-                            entity.movement.x = cardinals.at((entity.movement.cardinal - 1) % 8)[0]
-                            entity.movement.y = cardinals.at((entity.movement.cardinal - 1) % 8)[1]
+                            randomDirection.push("Front Right")
+
                         //side left
                         } else if (!locationId[(entity.position.x + cardinals.at((entity.movement.cardinal + 2) % 8)[0]) + "," + (entity.position.y + cardinals.at((entity.movement.cardinal + 2) % 8)[1])]) {
-                            entity.movement.x = cardinals.at((entity.movement.cardinal + 2) % 8)[0]
-                            entity.movement.y = cardinals.at((entity.movement.cardinal + 2) % 8)[1]
+                            randomDirection.push("Side Left")
+
                         //side right
                         } else if (!locationId[(entity.position.x + cardinals.at((entity.movement.cardinal - 2) % 8)[0]) + "," + (entity.position.y + cardinals.at((entity.movement.cardinal - 2) % 8)[1])]) {
+                            randomDirection.push("Side Right")
+
+                        //don't move
+                        }
+                        switch (randomDirection[Math.floor(Math.random() * randomDirection.length)]){
+                        case 'Front Left':
+                            entity.movement.x = cardinals.at((entity.movement.cardinal + 1) % 8)[0]
+                            entity.movement.y = cardinals.at((entity.movement.cardinal + 1) % 8)[1]
+                            break;
+                        case 'Front Right':
+                            entity.movement.x = cardinals.at((entity.movement.cardinal - 1) % 8)[0]
+                            entity.movement.y = cardinals.at((entity.movement.cardinal - 1) % 8)[1]
+                            break;
+                        case 'Side Left':
+                            entity.movement.x = cardinals.at((entity.movement.cardinal + 2) % 8)[0]
+                            entity.movement.y = cardinals.at((entity.movement.cardinal + 2) % 8)[1]
+                            break;
+                        case 'Side Right':
                             entity.movement.x = cardinals.at((entity.movement.cardinal - 2) % 8)[0]
                             entity.movement.y = cardinals.at((entity.movement.cardinal - 2) % 8)[1]
-                        //don't move
-                        } else {
+                            break;
+                        case 'None':
                             entity.movement.x = 0
                             entity.movement.y = 0
+                            break;
                         }
                     }
                     delete locationId[entity.position.x + "," + entity.position.y]
@@ -239,7 +256,6 @@ terminal.renderLoop = function(time) {
     if (this.update) {
       this.update();
     }
-    enemyAI(time)
     doAction(time)
 
     //clear screen
