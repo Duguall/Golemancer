@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head><script defer src="bundle.js"></script></head>
+    <head>
+        <title>Golemancer</title>
+    <body>
+        <div align="center" id="canvas"></div>
+    </body>
+</html>
+
+<body class="example" style="background-color: black; color: white;">
+    <canvas></canvas>
+</body>
+<br>
+Parts: <span id="Parts">100</span>
+<br>
+Golem Cost:<span id="golemCost">10</span>
+<br>
+<button type="button" onClick="onBuyGolemClick()">Buy Golem</button> Golems: <span id="golems">1</span>
+<br>
+Placement Method: <select id="placement">
+    <option value="0">Line</option>
+    <option value="1">Box</option>
+    <option value="2">Draw</option>
+    </select>
+<br>
+Damage Cost:<span id="damageCost">20</span>
+<br>
+<button type="button" onClick="onBuyDamageClick()">Buy Damage</button>Damage: <span id="Damage">1</span>
+<br>
+Attack Speed Cost:<span id="attackSpeedCost">100</span>
+<br>
+<button type="button" onClick="onBuyAttackSpeedClick()">Buy Attack Speed</button>Attack Speed: <span id="AttackSpeed">1</span>/sec
+<!--button type="button" onClick="save()">Save</button>
+<button type="button" onClick="load()">Load</button>
+<button type="button" onClick="deleteSave()">Delete Save</button>-->
+<br>
+<br>
+Instructions:
+<br>
+Left click places golems
+<br>
+Right click removes golems
