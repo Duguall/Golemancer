@@ -9,6 +9,7 @@
         "wglt": "^0.3.4"
     },
     "devDependencies": {
+        "gh-pages": "^4.0.0",
         "glob-parent": ">=5.1.2",
         "got": "^12.1.0",
         "html-webpack-plugin": "^5.5.0",
@@ -27,6 +28,6 @@
         "preinstall": "npx npm-force-resolutions",
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "webpack serve --open",
-        "build": "webpack"
+        "build": "webpack && gh-pages -d dist"
     }
 }
