@@ -1,4 +1,4 @@
-import { Colors } from "wglt"
+import { Colors,  } from "wglt"
 //default "Being"mob with related components
 export let Being = {
     name: "Being",
@@ -74,7 +74,7 @@ export let Human = {
         },
     }
    ] 
-};
+}
 //default "Zombie" subtype of "Being"
 export let Zombie = {
     name: "Zombie",
@@ -109,11 +109,11 @@ export let Zombie = {
      {
          type: "Movement",
          properties: {
-             velocity: 50,
+             velocity: 5,
          },
      },
     ] 
-};
+}
 
 export let Structure = {
     name: "Structure",
@@ -136,5 +136,82 @@ export let Structure = {
             type: "Position",
         },
     ]
+}
 
+export let Horizontal = {
+    name: "Horizontal",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xCD,
+                }
+        }
+    ]
+}
+
+export let Vertical = {
+    name: "Vertical",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xBA,
+                }
+        }
+    ]
+}
+
+export let BottomLeft = {
+    name: "BottomLeft",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xC8,
+                }
+        }
+    ]
+}
+
+export let BottomRight = {
+    name: "BottomRight",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xBC,
+                }
+        }
+    ]
+}
+
+export let TopLeft = {
+    name: "TopLeft",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xC9,
+                }
+        }
+    ]
+}
+
+export let TopRight = {
+    name: "TopRight",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xBB,
+                }
+        }
+    ]
 }

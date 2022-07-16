@@ -18,6 +18,8 @@ export class Appearance extends Component {
 export class Combat extends Component {
     static properties = {
         target: "",
+        targetCooldown: 0,
+        range: 1,
         x: 0,
         y: 0,
         distance: 0
