@@ -1,4 +1,4 @@
-import * as wglt from "wglt"
+import * as wglt from "../node_modules/wglt/dist/cjs/index.js"
 import engine from './ecs'
 import {Ally, Appearance, Combat, Description, Enemy, hasMoved, Health, Position, Action, Movement} from "./components"
 import {entityAI} from "./ai"
