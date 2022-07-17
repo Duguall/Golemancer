@@ -22,7 +22,9 @@ export class Combat extends Component {
         range: 1,
         x: 0,
         y: 0,
-        distance: 0
+        distance: 0,
+        damage: 1,
+        attackSpeed: 1000
     }
 }
 //name = name of object, desc = description of object
@@ -46,19 +48,18 @@ export class Health extends Component {
         minHp: 0
     }
     reduce(amount) {
-        this.hp = Math.max(this.hp-amount, this.minHp)
+        this.hp = this.hp-amount
     }
     heal(amount) {
-        this.hp = Math.min(this.hp+amount, this.maxHp)
+        this.hp = this.hp+amount
     }
     onDamageTaken(event) {
-    if (event.data.damage > 0) {
-        this.reduce(event.data.damage)
-    } else {
-        this.heal(event.data.damage)
+        if (event.data.damage > 0) {
+            this.reduce(event.data.damage)
+        } else {
+            this.heal(event.data.damage)
+        }
     }
-    }
-    
 }
 //x,y = x,y coordinate position on display
 export class Position extends Component {

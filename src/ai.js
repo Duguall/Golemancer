@@ -16,8 +16,9 @@ Modular AI:
     Target random globally
 */
 import { hasMoved } from "./components"
-
-
+import * as wglt from "wglt"
+import { killEntity } from "./functions"
+import { Enemy, Ally } from "./components"
 export let entityAI = {
     movement: {
         //move like a zombie horde. Requires entity, a target, movement direction
@@ -135,3 +136,111 @@ export let entityAI = {
     }
 }
 
+
+//Collective of all enemy AI
+//AI needs to have targetting, attacking, moving
+export function enemyAI(entityEnemy, time) {
+    if (entityEnemy.description.name == "Zombie") {
+        //action available
+        if (time - entityEnemy.action.last >= entityEnemy.action.adjusted) {
+            //target available
+            if (world.getEntity(entityEnemy.combat.target)) {
+                //target in range
+                if (Math.abs(entityEnemy.combat.x - entityEnemy.position.x) <= entityEnemy.combat.range && Math.abs(entityEnemy.combat.y - entityEnemy.position.y) <= entityEnemy.combat.range) {
+                    //in range and don't move
+                } else {
+                    //zombie targets nearest ally, 5sec cooldown. Stops tunnel-visioning but slow to respond
+                    entityAI.target.nearest(entityEnemy, "allies", 5)
+                    entityAI.movement.horde(entityEnemy)    
+                }
+            } else {
+                //zombie targets nearest ally, .1sec cooldown
+                entityAI.target.nearest(entityEnemy, "allies", .1)      
+            }
+                //adjusted action speed = action speed + (action speed - (time since last attack))
+                //Any action above or below the action speed will adjust the next action accordingly to keep action speed on average
+                //i.e. 1200ms since last action == next action is 800ms instead of 1000ms
+                //multiplier is for speeding up actions. i.e. velocity of 2 = move twice as fast. 1000ms/2=500ms cooldown
+                let multiplier = 1
+                if (entityEnemy.has(hasMoved)) {
+                    multiplier = entityEnemy.movement.velocity
+                    entityEnemy.remove(entityEnemy.hasMoved)
+                }
+                    entityEnemy.action.adjusted = (entityEnemy.action.speed + entityEnemy.action.speed - (time - entityEnemy.action.last))/multiplier
+                    entityEnemy.action.last = time
+            }
+        }
+    }
+export function allyAI(entityAlly, time) {
+    if (entityAlly.description.name == "Human") {
+        //action available
+        if (time - entityAlly.action.last >= entityAlly.action.adjusted) { 
+            //get a target
+            let target = world.getEntity(entityAlly.combat.target)
+            if (!target || Math.abs(entityAlly.position.x - target.position.x) > entityAlly.combat.range  && Math.abs(entityAlly.position.y - target.position.y) > entityAlly.combat.range) {
+                if(target) {target.appearance.color = wglt.Colors.DARK_GREEN}
+                entityAI.target.adjacent(entityAlly, "enemies", 0)
+            //have a target
+            } else {
+                target.appearance.color = wglt.Colors.LIGHT_RED
+                target.fireEvent("damage-taken", {damage:golemancer.golems.damage})
+                if (target.health.hp <= target.health.minHp) {
+                    killEntity(target)
+                    entityAlly.combat.target = ""
+                    entityAlly.combat.x = 0
+                    entityAlly.combat.y = 0
+                }
+
+            }
+                //target available
+                if (world.getEntity(entityAlly.combat.target)) {
+                    //if adjacent to target
+                }
+                //adjusted action speed = action speed + (action speed - (time since last attack))
+                //Any action above or below the action speed will adjust the next action accordingly to keep action speed on average
+                //i.e. 1200ms since last action == next action is 800ms instead of 1000ms
+                //multiplier is for speeding up actions. i.e. velocity of 2 = move twice as fast. 1000ms/2=500ms cooldown
+                let multiplier = 1
+                if (entityAlly.has(hasMoved)) {
+                    multiplier = entityAlly.movement.velocity
+                    entityAlly.remove(entityAlly.hasMoved)
+                }
+                //TODO:move golemancer into entity stats
+                entityAlly.action.adjusted = (1000/golemancer.golems.attackSpeed + 1000/golemancer.golems.attackSpeed - (time - entityAlly.action.last))/multiplier
+                //entityAlly.action.adjusted = (entityAlly.action.speed + entityAlly.action.speed - (time - entityAlly.action.last))/multiplier
+                entityAlly.action.last = time
+            }
+    }
+}
+
+//query all and do their next action
+//TODO: Movement for velocity > 1. Increment through each step to determine if next step is clear/adjacent to target
+//TODO: Maybe randomize the direction zombies decide to go when blocked.
+export function doAction(time) {
+    //reset stats for bottom display
+    golemancer.terminal.enemyCount = 0
+    golemancer.terminal.allyCount = 0
+    golemancer.terminal.enemyHealth = 0
+    golemancer.terminal.allyHealth = 0
+    golemancer.terminal.enemyMaxHealth = 0
+    golemancer.terminal.allyMaxHealth = 0
+    golemancer.terminal.enemyMinHealth = 0
+    golemancer.terminal.allyMinHealth = 0
+
+    query.action.get().forEach((entity) => {
+        if (entity.has(Enemy)) {
+            golemancer.terminal.enemyCount++
+            golemancer.terminal.enemyHealth += entity.health.hp
+            golemancer.terminal.enemyMaxHealth += entity.health.maxHp
+            golemancer.terminal.enemyMinHealth += entity.health.minHp
+            enemyAI(entity, time)
+        } else if (entity.has(Ally)) {
+            golemancer.terminal.allyCount++
+            golemancer.terminal.allyHealth += entity.health.hp
+            golemancer.terminal.allyMaxHealth += entity.health.maxHp
+            golemancer.terminal.allyMinHealth += entity.health.minHp
+            allyAI(entity, time)
+        }
+        
+    })
+}

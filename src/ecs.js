@@ -26,4 +26,8 @@ engine.registerPrefab(entities.BottomLeft)
 engine.registerPrefab(entities.BottomRight)
 engine.registerPrefab(entities.TopLeft)
 engine.registerPrefab(entities.TopRight)
+engine.registerPrefab(entities.TLeft)
+engine.registerPrefab(entities.TRight)
+engine.registerPrefab(entities.SingleHorizontal)
+engine.registerPrefab(entities.SingleVertical)
 export default engine;

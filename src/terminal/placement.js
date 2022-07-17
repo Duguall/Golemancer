@@ -18,7 +18,6 @@ function box(terminal, mouseStart, golemCount, removeBool) {
     let mousePath = []
     let lineCount = 0
 
-
     //bottom right box
     if (terminal.mouse.x - mouseStart.x > 0 && terminal.mouse.y - mouseStart.y > 0) {
         terminal.fillRect(mouseStart.x, mouseStart.y, terminal.mouse.x - mouseStart.x, terminal.mouse.y - mouseStart.y, 0, undefined, wglt.Colors.DARK_GRAY)
@@ -104,7 +103,3 @@ export let placement = function(terminal, mouseStart, golemCount, mousePath, pla
     }
 
 }
-
-
-
-

@@ -5,7 +5,6 @@ export let Being = {
     components: [
         {
             type: "Appearance",
-
         },
         {
             type: "Combat",
@@ -19,12 +18,15 @@ export let Being = {
         },
         {
             type: "Health",
+            properties: {
+                hp: 10,
+                maxHp: 10
+            },
         },
         {
             type: "Position",
         },
-        {
-            type: "Action",
+        { type: "Action", 
         },
         {
             type: "Movement",
@@ -37,11 +39,7 @@ export let Human = {
    name: "Human",
    inherit: "Being",
    components: [
-    { type: "Action",
-        properties: {
-            speed: 1000
-        }    
-    },
+    
     {
         type: "Ally",
             properties: {},
@@ -60,19 +58,7 @@ export let Human = {
             desc: "A human being."
         }
     },
-    {
-        type: "Health",
-        properties: {
-            hp: 10,
-            maxHp: 10
-        },
-    },
-    {
-        type: "Movement",
-        properties: {
-            velocity: 1,
-        },
-    }
+    
    ] 
 }
 //default "Zombie" subtype of "Being"
@@ -98,14 +84,6 @@ export let Zombie = {
         type: "Enemy",
         properties: {}
      },     
-     {
-         type: "Health",
-         properties: {
-             hp: 10,
-             maxHp: 10
-         },
-     },
- 
      {
          type: "Movement",
          properties: {
@@ -211,6 +189,57 @@ export let TopRight = {
             type: "Appearance", 
                 properties: {
                     char: 0xBB,
+                }
+        }
+    ]
+}
+
+export let TRight = {
+    name: "TRight",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xB9,
+                }
+        }
+    ]
+}
+
+export let TLeft = {
+    name: "TLeft",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xCC,
+                }
+        }
+    ]
+}
+export let SingleHorizontal = {
+    name: "Single Horizontal",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xC4,
+                }
+        }
+    ]
+}
+
+export let SingleVertical = {
+    name: "Single Vertical",
+    inherit: "Structure",
+    components: [
+        {
+            type: "Appearance", 
+                properties: {
+                    char: 0xB3,
                 }
         }
     ]

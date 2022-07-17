@@ -1,0 +1,25 @@
+Version 0.0.2 -UI Update- 7/16/22
+    New Features-
+    cleaned up main.js
+    moved html buttons and info into the terminal
+    Expanded terminal for submenus
+    side panel animation
+    partially implemented info on bottom menu
+    Rudimentary health bars
+
+    Bug Fixes-
+    placing/removing units outside arena and switching mouse click freezes placement
+
+    Known Bugs-
+
+    Planned- 
+    TODO: Prettify the health bars
+    TODO: Most boxes don't have corners
+    TODO: Better transition for side menu
+    TODO: display any selected entity's info on side panel
+    TODO: Centralize and modularize mouse clicking
+    TODO: generic draw box function?
+    TODO: create method to easily load ASCII art
+
+Version 0.0.1 - Technical Demo - 7/15/22
+    Barebones release

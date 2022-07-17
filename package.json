@@ -1,6 +1,6 @@
 {
     "name": "golemancer",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": [],
     "author": "Duguall",
     "contributors": [],
@@ -23,6 +23,11 @@
     "resolutions": {
         "trim-newlines": "^4.0.2",
         "got": "^12.1.0"
+    },
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false
     },
     "scripts": {
         "preinstall": "npx npm-force-resolutions",
